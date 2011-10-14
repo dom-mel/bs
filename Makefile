@@ -6,7 +6,7 @@ GCCOPT="-Wall"
 COMPILE=$(GCC) $(GCCOPT)
 
 uebung1: gennum.o sortnum.o
-	$(COMPILE) -o uebung1.out sortieren.c gennum.o sortnum.o
+	$(COMPILE) -lpthread -o uebung1.out sortieren.c gennum.o sortnum.o
 
 clean:
 	rm -f *.o

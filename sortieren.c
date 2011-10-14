@@ -3,13 +3,19 @@
 
 int main(int argc, char **argv) {
 
-    int *shuffel;
+    int **shuffle, i;
     struct timeval begin, end;
     long seconds, useconds;
+    pthread_t *threads;
 
+    shuffle = malloc(sizeof(int*) * THREAD_NUM);
+    threads = malloc(sizeof(pthread_t) * THREAD_NUM);
 
-    shuffel = createRandomArray(ARRAY_SIZE);
-//    printArray(shuffel);
+    for (i = 0; i < THREAD_NUM; ++i) {
+        shuffle[i] = createRandomArray(ARRAY_SIZE / THREAD_NUM);
+    }
+
+//    printArray(shuffle);
     printf("\nSorting...\n\n");
 
     if (gettimeofday(&begin,(struct timezone *)0)) {
@@ -17,14 +23,20 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    quicksort(shuffel, 0, ARRAY_SIZE -1) ;
+    for (i = 0; i < THREAD_NUM; ++i) {
+        pthread_create(&threads[i], NULL, threadSort, shuffle[i]); 
+    }
+
+    for (i = 0; i < THREAD_NUM; ++i) {
+        pthread_join(threads[i], NULL);
+    }
 
     if (gettimeofday(&end,(struct timezone *)0)) {
         fprintf(stderr, "can't get time\n");
         exit(1);
     }
 
-//    printArray(shuffel);
+//    printArray(shuffle);
 
     seconds = end.tv_sec - begin.tv_sec;
     useconds = end.tv_usec - begin.tv_usec;
@@ -35,9 +47,15 @@ int main(int argc, char **argv) {
     }
     
     printf("Sortierdauer: %ld sec %ld ms\n\n", seconds, useconds);
-
-    free(shuffel);
+    
+    free(shuffle);
+    free(threads);
     return 0;
+}
+
+void* threadSort(void *shuffle) {
+    quicksort(shuffle, 0, ARRAY_SIZE / THREAD_NUM -1);
+    return NULL;
 }
 
 void printArray(int *a) {
