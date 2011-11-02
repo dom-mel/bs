@@ -1,0 +1,55 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{ucs}
+\usepackage{makeidx}
+\setcounter{secnumdepth}{-1} 
+\author{Dominik Eckelmann}
+\title{Betriebssysteme Vertiefung\\Übung 2}
+\date{}
+\begin{document}
+\maketitle
+
+\section{Einleitung}
+Als Teil der Lehrveranstaltung \textit{Betriebssysteme Vertiefung} im Wintersemester 2011/2012 an der \textit{Beuth Hochschule für Technik Berlin} sollte im Rahmen einer Übung ein C-Programm zu
+entwickeln, welches Zufallszahlen erzeugt und diese sortiert ausgibt. Es soll festgestellt
+werden, wie viele Zahlen auf diese Weise sortiert werden können.
+
+Zudem sollen drei Unterschiedliche Programme, welche PI berechnen, ausgeführt und ihre Laufzeit
+gemessen werden.
+
+\section{Umgebung}
+Das Testsystem ist ein Intel(R) Core(TM)2 Duo L7500 @ 1.60GHz CPU, mit 4GB RAM von denen aber nur 2,9GB adressierbar sind.
+Das Betriebssystem ist ein Ubuntu 10.10 (Maverick) - 32Bit mit 2.6.35-30-generic Kernel.
+
+\section{Zufallszahlen sortieren}
+Die Anzahl der zu sortierenden Zufallszahlen kann in der sortieren.h festgelegt werden.
+Auf dem Testsystem kann das Betriebssystem maximal 547.483.646 Werte sortieren.
+Diese Grenze zeigt sich am Arbeitsspeicher, der so voll ausgelasstet ist.
+
+\section{Zeitmessungen}
+
+Tabelle \ref{zeitmessung} zeigt die gemessenen Ergebnisse.
+Bei pi\_v40 und pi\_v41 entsprechen sie den Erwartungen.
+Wenn diese in einem Thread ausgeführt werden haben pi\_v40 und pi\_v41
+ungefähr die gleiche Laufzeit. Wenn man pi\_v41 mit 2 Threads ausführt
+erreicht man eine Verbesserung der Laufzeit etwas unterhalb der 50%.
+Bei 4 Threads verbessert sich die Laufzeit nicht weiter. Dies is insofern
+ein zu erwartendes Ergeniss, da das Testsystem nur 2 Cores besitzt auf denen
+es diese Ausführen kann.
+
+Im Falle von pi\_v42 kann keine Aussage getroffen werden, da das Programm PI nicht korrekt annähert.
+Das Ergebnis ist `nan'.
+
+\begin{table}
+\begin{tabular}{|l|r|}
+\hline pi\_v40 & 21,403s \\ 
+\hline pi\_v41 (1 Thread) & 21,739s \\ 
+\hline pi\_v41 (2 Thread) & 12,611s \\ 
+\hline pi\_v41 (4 Thread) & 13,759s \\ 
+\hline pi\_v42 & 1min 23,915s - Fehlerhaftes ende \\ 
+\hline 
+\end{tabular} 
+\caption{Ergebnisse der Zeitmessungen aus Übung 2}
+\label{zeitmessung}
+\end{table}
+\end{document}

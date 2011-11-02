@@ -7,8 +7,8 @@ void quicksort (int a[], int lo, int hi) {
     int h;
     int x=a[(lo+hi)/2];
 
-    do {    
-        while (a[i]<x) i++; 
+    do {
+        while (a[i]<x) i++;
         while (a[j]>x) j--;
         if (i<=j)
         {
