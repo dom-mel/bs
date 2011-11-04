@@ -1,0 +1,142 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+\usepackage{csquotes}
+\usepackage[ngerman]{babel}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{subfigure}
+\setcounter{secnumdepth}{-1} 
+\usepackage{hyperref}
+\title{Betriebssysteme Vertiefung \\ Übungskomplex 1 Teil 2}
+
+\author{Dominik Eckelmann, Matr.-Nr.: 785856}
+\date{\today}
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Einleitung}
+Als Teil der Lehrveranstaltung \textit{Betriebssysteme Vertiefung} im Wintersemester 2011/2012 an der \textit{Beuth Hochschule für Technik Berlin} sollte im Rahmen einer Übung mithilfe der Programmiersprache C ein Programm geschrieben werden, welches paralleles Sortieren unter Verwendung
+des Quicksort Algorithmus ermöglicht.
+
+\newpage
+
+\section{Aufgabe 1 und 2}
+
+Das Programm wurde mithilf der pthread Bibliothek Multithreadingfähig gemacht.
+Die Zeitmessung mit `time' ergab:
+
+\begin{description}
+\item[Mit 1 Thread] xx Sekunden
+\item[Mit 2 Threads] xx Sekunden
+\end{description}
+
+Die Zeitmessung direkt im Programmcode wurde mithilfe der `gettimeofday' Funktion vorgenommen.
+Gemessen wird die Zeit zwischen dem starten der Threads und dem beenden der Threads.
+Die Generierung, sowie die Ausgabe des Arrays wird nicht mit berücksichtigt.
+
+Die Messungen ergaben:
+\begin{description}
+\item[Mit 1 Thread] xx Sekunden
+\item[Mit 2 Threads] xx Sekunden
+\end{description}
+
+\section{Aufgabe 3}
+
+In Aufgabe 3 sollen verschiedene Ausgaben Interpretiert werden.
+
+Die Ausgabe des ersten `ps' Aufrufes ist:
+\begin{verbatim}
+UID        PID  PPID  C STIME TTY          TIME CMD
+dominik   8433  8429  0 16:42 pts/0    00:00:00 bash
+dominik   8537  8433  0 16:52 pts/0    00:00:00   vi xxx
+dominik   8538  8537  3 16:52 pts/0    00:00:00     bash
+dominik   8563  8538  0 16:52 pts/0    00:00:00       ps -Hf
+\end{verbatim}
+
+Die Abhängigkeiten der gezeigten Prozesse ist:
+\begin{description}
+\item[ps -Hf (PID: 8563)] ist der Kindprozess von `bash'
+\item[bash (PID: 8538)] ist der Kindprozess von `vi xxx'
+\item[vi xxx (PID: 8537)] ist der Kindprozess von `bash'
+\item[bash (PID: 8433)] ist der Kindprozess vom Prozess mit der PID 8429
+\end{description}
+
+Andersrum gesagt, es wurde auf der `bash' der Befehl `vi xxx' gestartet.
+Aus dem `vi' heraus wurde eine weitere `bash' gestartet in welcher der `ps'-Befehl
+die Prozessausgabe von oben anzeigt.
+
+\paragraph{}
+Die Ausgabe des Befehles `ps -ef | grep -v grep | grep 8433'
+\begin{verbatim}
+UID       PID   PPID  C STIME TTY      TIME     CMD
+dominik   8433  8429  0 16:42 pts/0    00:00:00 bash
+dominik   9275  8433  0 17:09 pts/0    00:00:00 ps -ef
+\end{verbatim}
+Zunächst sehen wir hier wieder einen Elternprozess und sinen Kindprozess.	
+
+\begin{description}
+\item[UID] ist die Benutzer ID bzw. der Anmeldename des Benutzers, unter welchem der Prozess läuft.
+\item[PID] ist die Prozess ID. Sie ist eindeutig für jeden Thread.
+\item[PPID] ist die Prozess ID des Elternprozesses.
+\item[CMD] ist das Programm, welches ausgeführt wird.
+\end{description}
+
+\paragraph{}
+Das Kommando `exec date' ersetzt den laufenden Prozess mit dem des `date' Befehles.
+Das heißt es wird das aktuelle Datum ausgegeben und danach das Programm beendet, sprich
+die Shell schließt sich. Hierzu auch aus den Manpages: 
+`The  exec() family of functions replaces the current process image with a new process image.'
+
+\section{Aufgabe 4}
+Um die Shellskripte zu starten müssen diese zunächst via `chmod +x script\_datei.sh'
+das Recht bekommen ausgeführt zu werden.
+
+Die Ausgabe der `ps' Kommandos zeigt den aktuellen Prozessbaum. Beim Ausführen
+der `master.sh' werden jedoch die Kindprozesse child1 und child2 nicht angezeigt.
+Bei den `ps' Ausgaben der `child1.sh' und der `child2.sh' werden hier jeweils
+beide Kindprozesse der `master.sh' angezeigt.
+
+Die Reihenfolge der Ausgaben ist wie folgt: Zuerst wird der Inhalt der `master.sh'
+ausgegeben. Die Ausgaben der `child1.sh' und `child2.sh' finden gleichzeitig statt
+und überschneiden sich.
+
+Damit die Ausgabe `Master done' am ende erscheint muss die `master.sh' folgendermaßen
+angepasst werden:
+
+\begin{verbatim}
+#!/bin/bash
+####################################################
+# master programm
+#
+####################################################
+date
+echo "start two child processes!"
+./child1.sh &
+echo "Process id from first child process $!"
+./child2.sh &
+echo "Process id from second child process $!"
+ps -HF
+wait
+echo "Master done"
+exit 0
+\end{verbatim}
+
+\section{Aufgabe 5}
+
+Wenn das Kommando `:()\{ :\textbar:\& \};:' auf der Shell ausgeführt wird,
+wird zunächst eine Funktion mit dem namen `:' erzeugt.
+Die Funktion startet sich nun selbst (rekrusiv) in einem neuen Prozess aus. Im aktuellen
+Prozess ruft sich sich auch rekrusiv aus.
+Theoretisch werden nun unendlich viele Prozesse gestartet.
+In der Praxis legt dieses Kommando den ausführenden
+Computer lahm. Diese Art von Programmen werden auch forkbomb genannt.
+
+Das C-Programm stellt die gleiche Funktionalität bereit. Der Unterschied ist lediglich das
+es iterativ arbeitet und so in einer endlosschleife neue Prozesse startet.
+
+\end{document}
