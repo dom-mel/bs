@@ -8,12 +8,13 @@ int main(int argc, char **argv) {
     long seconds, useconds;
     pthread_t *threads;
     struct args left, right;
+    int *r;
 
     threads = malloc(sizeof(pthread_t)*2);
-
     shuffle = createRandomArray(ARRAY_SIZE);
+    r = malloc(sizeof(int) * 2);
 
-    printArray(shuffle);
+//    printArray(shuffle);
     printf("\nSorting...\n\n");
 
     if (gettimeofday(&begin,(struct timezone *)0)) {
@@ -23,8 +24,13 @@ int main(int argc, char **argv) {
 
     left.array = shuffle;
     right.array = shuffle;
-    left.left = 1;
-    right.left = 0;
+
+    merge(shuffle, ARRAY_SIZE-1, r);
+
+    left.lo = 0;
+    left.hi = r[0];
+    right.lo = r[1];
+    right.hi = ARRAY_SIZE-1;
 
     pthread_create(&threads[0], NULL, threadSort, (void *) &left);
     pthread_create(&threads[1], NULL, threadSort, (void *) &right);
@@ -32,15 +38,12 @@ int main(int argc, char **argv) {
     pthread_join(threads[0], NULL);
     pthread_join(threads[1], NULL);
 
-    //merge(shuffle, ARRAY_SIZE-1);
-    quicksort(shuffle, 0, ARRAY_SIZE-1);
-
     if (gettimeofday(&end,(struct timezone *)0)) {
         fprintf(stderr, "can't get time\n");
         exit(1);
     }
 
-    printArray(shuffle);
+  //  printArray(shuffle);
 
     seconds = end.tv_sec - begin.tv_sec;
     useconds = end.tv_usec - begin.tv_usec;
@@ -59,11 +62,7 @@ int main(int argc, char **argv) {
 
 void* threadSort(void *threadArgs) {
     struct args *arguments = (struct args*) threadArgs;
-    if (arguments->left != 0) {
-        quicksort(arguments->array, 0, ARRAY_SIZE/2);
-    } else {
-        quicksort(arguments->array, ARRAY_SIZE/2+1, ARRAY_SIZE-1);
-    }
+    quicksort(arguments->array, arguments->lo, arguments->hi);
     return NULL;
 }
 

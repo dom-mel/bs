@@ -23,7 +23,7 @@ void quicksort (int a[], int lo, int hi) {
     if (i<hi) quicksort(a, i, hi);
 }
 
-void merge(int *a, int size) {
+void merge(int *a, int size, int* r) {
     int i=0;
     int j=size;
     int h;
@@ -40,4 +40,6 @@ void merge(int *a, int size) {
             j--;
         }
     } while (i<=j);
+    r[0] = j;
+    r[1] = i;
 }

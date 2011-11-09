@@ -23,16 +23,15 @@
 Als Teil der Lehrveranstaltung \textit{Betriebssysteme Vertiefung} im Wintersemester 2011/2012 an der \textit{Beuth Hochschule für Technik Berlin} sollte im Rahmen einer Übung mithilfe der Programmiersprache C ein Programm geschrieben werden, welches paralleles Sortieren unter Verwendung
 des Quicksort Algorithmus ermöglicht.
 
-\newpage
-
 \section{Aufgabe 1 und 2}
 
 Das Programm wurde mithilf der pthread Bibliothek Multithreadingfähig gemacht.
+Zur Zeitmessung wurden 100.000.000 Zahlen erzeugt und sortiert.
 Die Zeitmessung mit `time' ergab:
 
 \begin{description}
-\item[Mit 1 Thread] xx Sekunden
-\item[Mit 2 Threads] xx Sekunden
+\item[Mit 1 Thread] 31.631s
+\item[Mit 2 Threads] 21.052s
 \end{description}
 
 Die Zeitmessung direkt im Programmcode wurde mithilfe der `gettimeofday' Funktion vorgenommen.
@@ -41,8 +40,8 @@ Die Generierung, sowie die Ausgabe des Arrays wird nicht mit berücksichtigt.
 
 Die Messungen ergaben:
 \begin{description}
-\item[Mit 1 Thread] xx Sekunden
-\item[Mit 2 Threads] xx Sekunden
+\item[Mit 1 Thread] 28.679589s
+\item[Mit 2 Threads] 18.421499s
 \end{description}
 
 \section{Aufgabe 3}

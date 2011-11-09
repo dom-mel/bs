@@ -9,15 +9,15 @@
 
 
 // laptop 547483646
-#define ARRAY_SIZE 10
-#define THREAD_NUM 2
+#define ARRAY_SIZE 100000000
 
 int main(int argc, char **argv);
 void* threadSort(void *shuffle);
 void printArray(int a[]);
 struct args {
     int* array;
-    short left;
+    int lo;
+    int hi;
 };
 
 #endif
