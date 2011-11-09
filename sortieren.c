@@ -66,10 +66,16 @@ void* threadSort(void *threadArgs) {
     return NULL;
 }
 
+
 void printArray(int *a) {
     int i;
     for (i = 0; i<ARRAY_SIZE; ++i) {
-        printf("%d\n", a[i]);
+        printf("%12d", a[i]);
+        if (i%2 == 1) {
+            printf("\n");
+        } else {
+            printf("\t");
+        }
     }
-
 }
+
