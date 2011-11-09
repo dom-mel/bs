@@ -35,7 +35,7 @@ Die Zeitmessung mit `time' ergab:
 \end{description}
 
 Die Zeitmessung direkt im Programmcode wurde mithilfe der `gettimeofday' Funktion vorgenommen.
-Gemessen wird die Zeit zwischen dem starten der Threads und dem beenden der Threads.
+Gemessen wird lediglich das Sortieren des Arrays.
 Die Generierung, sowie die Ausgabe des Arrays wird nicht mit berücksichtigt.
 
 Die Messungen ergaben:
@@ -43,6 +43,9 @@ Die Messungen ergaben:
 \item[Mit 1 Thread] 28.679589s
 \item[Mit 2 Threads] 18.421499s
 \end{description}
+
+\paragraph{Anmerkung} Bei den Zeitmessungen wurden die Ausgaben der Arrays auskommentiert,
+da diese viel Zeit in anspruch nimmt und nicht paralelisiert ist.
 
 \section{Aufgabe 3}
 
