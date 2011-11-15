@@ -6,15 +6,13 @@ int main(int argc, char **argv) {
     int *shuffle;
     struct timeval begin, end;
     long seconds, useconds;
-    pthread_t *threads;
-    struct args left, right;
     int *r;
+    int fd[2];
+    pid_t pid;
 
-    threads = malloc(sizeof(pthread_t)*2);
     shuffle = createRandomArray(ARRAY_SIZE);
-    r = malloc(sizeof(int) * 2);
 
-    printArray(shuffle);
+//    printArray(shuffle);
     printf("\nSorting...\n\n");
 
     if (gettimeofday(&begin,(struct timezone *)0)) {
@@ -22,50 +20,49 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    left.array = shuffle;
-    right.array = shuffle;
+    if (pipe(fd)) {
+        fprintf(stderr, "Unable to create pipe.\n");
+        return 1;
+    }
 
+    r = malloc(sizeof(int) * 2);
     merge(shuffle, ARRAY_SIZE-1, r);
 
-    left.lo = 0;
-    left.hi = r[0];
-    right.lo = r[1];
-    right.hi = ARRAY_SIZE-1;
+    pid = fork();
+    if (pid == 0) {
+        quicksort(shuffle, 0, r[0]);
+        close(fd[0]);
+        write_numbers(shuffle, r[0], fd[1]);
+        return 0;
+    } else if (pid > 0) {
+        quicksort(shuffle, r[1], ARRAY_SIZE -1);
+        close(fd[1]);
+        read_numbers(fd[0], shuffle);
 
-    pthread_create(&threads[0], NULL, threadSort, (void *) &left);
-    pthread_create(&threads[1], NULL, threadSort, (void *) &right);
+        if (gettimeofday(&end,(struct timezone *)0)) {
+            fprintf(stderr, "can't get time\n");
+            exit(1);
+        }
 
-    pthread_join(threads[0], NULL);
-    pthread_join(threads[1], NULL);
+//        printArray(shuffle);
 
-    if (gettimeofday(&end,(struct timezone *)0)) {
-        fprintf(stderr, "can't get time\n");
-        exit(1);
+        seconds = end.tv_sec - begin.tv_sec;
+        useconds = end.tv_usec - begin.tv_usec;
+
+        if(useconds < 0) {
+            useconds += 1000000;
+            seconds--;
+        }
+
+        printf("Sortierdauer: %ld sec %ld ms\n\n", seconds, useconds);
+
+        free(shuffle);
+        return 0;
+
+    } else {
+        return 2;
     }
-
-    printArray(shuffle);
-
-    seconds = end.tv_sec - begin.tv_sec;
-    useconds = end.tv_usec - begin.tv_usec;
-
-    if(useconds < 0) {
-        useconds += 1000000;
-        seconds--;
-    }
-
-    printf("Sortierdauer: %ld sec %ld ms\n\n", seconds, useconds);
-
-    free(shuffle);
-    free(threads);
-    return 0;
 }
-
-void* threadSort(void *threadArgs) {
-    struct args *arguments = (struct args*) threadArgs;
-    quicksort(arguments->array, arguments->lo, arguments->hi);
-    return NULL;
-}
-
 
 void printArray(int *a) {
     int i;
@@ -77,5 +74,27 @@ void printArray(int *a) {
             printf("\t");
         }
     }
+}
+
+void write_numbers(int* numbers, int max, int output) {
+    int i;
+    for (i = 0; i < max; i++) {
+        int number = numbers[i];
+        char string[50];
+        sprintf(string, "%d\n", number);
+        (void)write(output, string, strlen(string));
+    }
+}
+
+void read_numbers(int input, int* numbers) {
+    FILE *stream = fdopen(input, "r");
+    char line[20];
+    int i = 0;
+    while (fgets(line, sizeof(line), stream)) {
+        int number;
+        sscanf(line, "%d\n", &number);
+        numbers[i++] = number;
+    }
+    fclose (stream);
 }
 

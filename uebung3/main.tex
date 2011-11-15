@@ -25,13 +25,13 @@ des Quicksort Algorithmus ermöglicht.
 
 \section{Aufgabe 1 und 2}
 
-Das Programm wurde mithilf der pthread Bibliothek Multithreadingfähig gemacht.
 Zur Zeitmessung wurden 100.000.000 Zahlen erzeugt und sortiert.
 Die Zeitmessung mit `time' ergab:
 
 \begin{description}
-\item[Mit 1 Thread] 31.631s
+\item[Mit 1 Prozess] 31.631s
 \item[Mit 2 Threads] 21.052s
+\item[Mit 2 Prozessen] 2m 14.325s
 \end{description}
 
 Die Zeitmessung direkt im Programmcode wurde mithilfe der `gettimeofday' Funktion vorgenommen.
@@ -40,8 +40,9 @@ Die Generierung, sowie die Ausgabe des Arrays wird nicht mit berücksichtigt.
 
 Die Messungen ergaben:
 \begin{description}
-\item[Mit 1 Thread] 28.679589s
+\item[Mit 1 Prozess] 28.679589s
 \item[Mit 2 Threads] 18.421499s
+\item[Mit 2 Prozessen] 2m 11.354375s
 \end{description}
 
 \paragraph{Anmerkung} Bei den Zeitmessungen wurden die Ausgaben der Arrays auskommentiert,
