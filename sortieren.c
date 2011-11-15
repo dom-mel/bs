@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
 
     shuffle = createRandomArray(ARRAY_SIZE);
 
-//    printArray(shuffle);
+    printArray(shuffle);
     printf("\nSorting...\n\n");
 
     if (gettimeofday(&begin,(struct timezone *)0)) {
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
             exit(1);
         }
 
-//        printArray(shuffle);
+        printArray(shuffle);
 
         seconds = end.tv_sec - begin.tv_sec;
         useconds = end.tv_usec - begin.tv_usec;

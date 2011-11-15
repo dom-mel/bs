@@ -11,7 +11,7 @@
 #include <string.h>
 
 // laptop 547483646
-#define ARRAY_SIZE 100000000
+#define ARRAY_SIZE 10
 
 int main(int argc, char **argv);
 void printArray(int a[]);

@@ -1,6 +1,6 @@
 
 uebung1: gennum.o sortnum.o
-	gcc -Wall -O2 -o uebung2.out sortieren.c gennum.o sortnum.o
+	gcc -Wall -O2 -o uebung3.out sortieren.c gennum.o sortnum.o
 
 clean:
 	rm -f *.o
